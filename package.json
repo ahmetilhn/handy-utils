@@ -1,7 +1,7 @@
 {
-  "name": "amigo-js",
-  "version": "3.1.1",
-  "description": "Amigo JS offers developers a powerful and easy-to-use toolset. With its clean, modular and scalable code structure, it accelerates development processes and reduces code complexity. With a wide range of functions, it offers ready-made methods for solving common problems.",
+  "name": "@ahmetilhn/handy-utils",
+  "version": "3.2.0",
+  "description": "Handy utils offers developers a powerful and easy-to-use toolset. With its clean, modular and scalable code structure, it accelerates development processes and reduces code complexity. With a wide range of functions, it offers ready-made methods for solving common problems.",
   "author": "Ahmet ilhan <ahmetilhan.dev@gmail.com>",
   "license": "MIT",
   "main": "build/index.js",
