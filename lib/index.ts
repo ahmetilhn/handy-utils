@@ -14,6 +14,8 @@ import isUndefined from "./modules/is-undefined";
 import isNull from "./modules/is-null";
 import isServer from "./modules/is-server";
 import isClient from "./modules/is-client";
+import isAndroid from "./modules/is-android";
+import isIos from "./modules/is-ios";
 export {
   deepClone,
   isArray,
@@ -31,4 +33,6 @@ export {
   isNull,
   isServer,
   isClient,
+  isAndroid,
+  isIos,
 };
