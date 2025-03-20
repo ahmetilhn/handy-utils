@@ -1,7 +1,7 @@
-import isUndefined from "./is-undefined";
+import isClient from "./is-client";
 
 const isServer = (): boolean => {
-  return isUndefined(globalThis.window);
+  return !isClient();
 };
 
 export default isServer;

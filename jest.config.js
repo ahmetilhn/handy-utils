@@ -16,4 +16,5 @@ module.exports = {
   },
   collectCoverage: true,
   coverageDirectory: "coverage",
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
 };

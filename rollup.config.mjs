@@ -24,7 +24,7 @@ export default [
   },
   {
     input: "./lib/index.ts",
-    output: [{ file: "./build/index.d.ts", format: "umd" }],
+    output: [{ file: "./build/index.d.ts", format: "es" }],
     plugins: [dts({ tsconfig: "./tsconfig.json" })],
   },
 ];
