@@ -8,7 +8,7 @@ module.exports = {
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/lib/$1",
   },
-  global: {
+  globals: {
     branches: 94,
     functions: 100,
     lines: 100,

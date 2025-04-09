@@ -33,4 +33,12 @@ describe("isAndroid tests", () => {
 
     expect(() => isAndroid()).toThrow();
   });
+  test("it should return true when got userAgent param", () => {
+    const isAndroid = require("@/modules/is-android").default;
+    expect(
+      isAndroid(
+        "Mozilla/5.0 (Linux; Android <version>; <device_model> Build/<build_version>) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/<chrome_version> Mobile Safari/537.36"
+      )
+    ).toBeTruthy();
+  });
 });

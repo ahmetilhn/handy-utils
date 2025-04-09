@@ -33,4 +33,12 @@ describe("isIos tests", () => {
     const isIos = require("@/modules/is-ios").default;
     expect(() => isIos()).toThrow();
   });
+  test("it should return true when got userAgent param", () => {
+    const isIos = require("@/modules/is-ios").default;
+    expect(
+      isIos(
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/537.36 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/537.36"
+      )
+    ).toBeTruthy();
+  });
 });
