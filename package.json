@@ -7,7 +7,7 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "publisher": "Ahmet ilhan",
-  "repository": "https://github.com/ahmetilhn/amigo-js.git",
+  "repository": "https://github.com/ahmetilhn/handy-utils.git",
   "scripts": {
     "build": "sh ./scripts/prod-build.sh",
     "dev": "sh ./scripts/dev-build.sh",
