@@ -16,6 +16,7 @@ import isServer from "./modules/is-server";
 import isClient from "./modules/is-client";
 import isAndroid from "./modules/is-android";
 import isIos from "./modules/is-ios";
+import withRetry from "./modules/with-retry";
 export {
   deepClone,
   isArray,
@@ -35,4 +36,5 @@ export {
   isClient,
   isAndroid,
   isIos,
+  withRetry,
 };
