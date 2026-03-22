@@ -1,7 +1,7 @@
 import watcher from "@/modules/watcher";
 
 describe("watcher tests", () => {
-  it("değer değiştiğinde onChange tetiklenir", () => {
+  test("should trigger onChange when value changes", () => {
     const onChange = jest.fn();
     const state = watcher({ count: 0 }, onChange);
 
@@ -11,7 +11,7 @@ describe("watcher tests", () => {
     expect(onChange).toHaveBeenCalledWith("count", 1, 0);
   });
 
-  it("aynı değer atanırsa onChange tetiklenmez", () => {
+  test("should not trigger onChange when same value is assigned", () => {
     const onChange = jest.fn();
     const state = watcher({ count: 0 }, onChange);
 
@@ -20,7 +20,7 @@ describe("watcher tests", () => {
     expect(onChange).not.toHaveBeenCalled();
   });
 
-  it("birden fazla alan izlenebilir", () => {
+  test("should watch multiple fields", () => {
     const onChange = jest.fn();
     const state = watcher({ count: 0, name: "Ahmet" }, onChange);
 
@@ -32,7 +32,7 @@ describe("watcher tests", () => {
     expect(onChange).toHaveBeenNthCalledWith(2, "name", "Mehmet", "Ahmet");
   });
 
-  it("NaN === NaN atamasında onChange tetiklenmez", () => {
+  test("should not trigger onChange when NaN is assigned to NaN", () => {
     const onChange = jest.fn();
     const state = watcher({ value: NaN }, onChange);
 
@@ -41,7 +41,7 @@ describe("watcher tests", () => {
     expect(onChange).not.toHaveBeenCalled();
   });
 
-  it("undefined'dan değere geçişte önceki değer undefined gelir", () => {
+  test("should pass undefined as old value when transitioning from undefined", () => {
     const onChange = jest.fn();
     const state = watcher({ label: undefined as string | undefined }, onChange);
 
@@ -50,7 +50,7 @@ describe("watcher tests", () => {
     expect(onChange).toHaveBeenCalledWith("label", "test", undefined);
   });
 
-  it("proxy orijinal nesneyi mutate eder", () => {
+  test("should mutate the original object through proxy", () => {
     const original = { count: 0 };
     const state = watcher(original, jest.fn());
 

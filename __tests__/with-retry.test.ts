@@ -7,7 +7,7 @@ class NetworkError extends Error {}
 class OtherError extends Error {}
 
 describe("withRetry tests", () => {
-  it("başarılı çağrıda sonucu döner", async () => {
+  test("should return result on successful call", async () => {
     const fn = jest.fn().mockResolvedValue("ok");
     const result = await withRetry({
       fn,
@@ -19,7 +19,7 @@ describe("withRetry tests", () => {
     expect(fn).toHaveBeenCalledTimes(1);
   });
 
-  it("belirtilen hata türünde retry yapar", async () => {
+  test("should retry on specified error type", async () => {
     const fn = jest
       .fn()
       .mockRejectedValueOnce(new NetworkError())
@@ -36,7 +36,7 @@ describe("withRetry tests", () => {
     expect(fn).toHaveBeenCalledTimes(3);
   });
 
-  it("farklı hata türünde retry yapmadan fırlatır", async () => {
+  test("should throw immediately without retrying on different error type", async () => {
     const fn = jest.fn().mockRejectedValue(new OtherError());
     await expect(
       withRetry({ fn, retries: 3, delay: 100, exception: NetworkError }),
@@ -44,7 +44,7 @@ describe("withRetry tests", () => {
     expect(fn).toHaveBeenCalledTimes(1);
   });
 
-  it("tüm denemeler başarısız olursa null döner", async () => {
+  test("should return null when all retries fail", async () => {
     const fn = jest.fn().mockRejectedValue(new NetworkError());
     const result = await withRetry({
       fn,
@@ -56,14 +56,14 @@ describe("withRetry tests", () => {
     expect(fn).toHaveBeenCalledTimes(3);
   });
 
-  it("exponential backoff ile sleep çağrılır", async () => {
+  test("should call sleep with exponential backoff", async () => {
     const fn = jest.fn().mockRejectedValue(new NetworkError());
     await withRetry({ fn, retries: 3, delay: 100, exception: NetworkError });
     expect(sleep).toHaveBeenNthCalledWith(1, 100);
     expect(sleep).toHaveBeenNthCalledWith(2, 200);
   });
 
-  it("retries=1 ise sleep çağrılmaz", async () => {
+  test("should not call sleep when retries is 1", async () => {
     const fn = jest.fn().mockRejectedValue(new NetworkError());
     await withRetry({ fn, retries: 1, delay: 100, exception: NetworkError });
     expect(sleep).not.toHaveBeenCalled();
