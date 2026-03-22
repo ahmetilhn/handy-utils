@@ -1,4 +1,4 @@
-const isNull = (val: unknown): val is Exclude<any, null> => {
+const isNull = (val: unknown): val is null => {
   return val === null;
 };
 

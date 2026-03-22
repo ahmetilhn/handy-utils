@@ -26,6 +26,7 @@ const isDeepEqual = (valOne: unknown, valTwo: unknown): boolean => {
   } else if (isPlainObject(valOne) && isPlainObject(valTwo)) {
     if (Object.keys(valOne).length !== Object.keys(valTwo).length) return false;
     for (const key in valOne) {
+      if (!Object.prototype.hasOwnProperty.call(valTwo, key)) return false;
       if (!isDeepEqual(valOne[key], valTwo[key])) return false;
     }
     return true;

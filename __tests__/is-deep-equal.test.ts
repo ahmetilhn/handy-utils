@@ -1,102 +1,100 @@
 import isDeepEqual from "@/modules/is-deep-equal";
+
 describe("isDeepEqual tests", () => {
-  test("should return false", () => {
-    expect(isDeepEqual("test", "Test")).toBeFalsy();
+  test("should return false for different strings", () => {
+    expect(isDeepEqual("test", "Test")).toBe(false);
   });
-  test("should return false", () => {
-    expect(isDeepEqual("test", 1)).toBeFalsy();
+
+  test("should return false for different types", () => {
+    expect(isDeepEqual("test", 1)).toBe(false);
+    expect(isDeepEqual(2, "Test")).toBe(false);
+    expect(isDeepEqual(["ahmet"], { test: 2 })).toBe(false);
   });
-  test("should return false", () => {
-    expect(isDeepEqual(2, "Test")).toBeFalsy();
+
+  test("should return false for different numbers", () => {
+    expect(isDeepEqual(1, 2)).toBe(false);
   });
-  test("should return false", () => {
-    expect(isDeepEqual(1, 2)).toBeFalsy();
+
+  test("should return false for null vs other types", () => {
+    expect(isDeepEqual(null, 1)).toBe(false);
+    expect(isDeepEqual(null, NaN)).toBe(false);
+    expect(isDeepEqual(null, undefined)).toBe(false);
   });
-  test("should return false", () => {
-    expect(isDeepEqual(null, 1)).toBeFalsy();
+
+  test("should return false for NaN comparisons", () => {
+    expect(isDeepEqual(NaN, undefined)).toBe(false);
+    expect(isDeepEqual(NaN, NaN)).toBe(false);
   });
-  test("should return false", () => {
-    expect(isDeepEqual(null, NaN)).toBeFalsy();
+
+  test("should return false for objects with different values", () => {
+    expect(isDeepEqual({ test: 1 }, { test: 2 })).toBe(false);
   });
-  test("should return false", () => {
-    expect(isDeepEqual(null, undefined)).toBeFalsy();
+
+  test("should return false for objects with different keys", () => {
+    expect(isDeepEqual({ a: 1 }, { b: 1 })).toBe(false);
+    expect(isDeepEqual({ a: undefined }, { b: undefined })).toBe(false);
   });
-  test("should return false", () => {
-    expect(isDeepEqual(NaN, undefined)).toBeFalsy();
+
+  test("should return false for different arrays", () => {
+    expect(isDeepEqual(["ahmet"], ["metin"])).toBe(false);
+    expect(isDeepEqual([1, 2], [1, 2, 3])).toBe(false);
   });
-  test("should return false", () => {
-    expect(isDeepEqual(NaN, NaN)).toBeFalsy();
+
+  test("should return false for different dates", () => {
+    expect(
+      isDeepEqual(new Date("2011-10-12"), new Date("2011-10-10"))
+    ).toBe(false);
   });
-  test("should return false", () => {
-    expect(isDeepEqual({ test: 1 }, { test: 2 })).toBeFalsy();
+
+  test("should return true for identical primitives", () => {
+    expect(isDeepEqual(1, 1)).toBe(true);
+    expect(isDeepEqual("2", "2")).toBe(true);
+    expect(isDeepEqual(null, null)).toBe(true);
+    expect(isDeepEqual(undefined, undefined)).toBe(true);
   });
-  test("should return false", () => {
-    expect(isDeepEqual(["ahmet"], { test: 2 })).toBeFalsy();
+
+  test("should return true for empty objects and arrays", () => {
+    expect(isDeepEqual({}, {})).toBe(true);
+    expect(isDeepEqual([], [])).toBe(true);
   });
-  test("should return false", () => {
-    expect(isDeepEqual(["ahmet"], ["metin"])).toBeFalsy();
+
+  test("should return true for equal arrays", () => {
+    expect(isDeepEqual([10, 2], [10, 2])).toBe(true);
+    expect(isDeepEqual(["ahmet"], ["ahmet"])).toBe(true);
+    expect(isDeepEqual([{ key: "value" }], [{ key: "value" }])).toBe(true);
   });
-  test("should return true", () => {
-    expect(isDeepEqual(null, null)).toBeTruthy();
+
+  test("should return true for equal dates", () => {
+    expect(
+      isDeepEqual(new Date("2011-10-10"), new Date("2011-10-10"))
+    ).toBe(true);
   });
-  test("should return true", () => {
-    expect(isDeepEqual(1, 1)).toBeTruthy();
-  });
-  test("should return true", () => {
-    expect(isDeepEqual("2", "2")).toBeTruthy();
-  });
-  test("should return true", () => {
-    expect(isDeepEqual([], [])).toBeTruthy();
-  });
-  test("should return true", () => {
-    expect(isDeepEqual([10, 2], [10, 2])).toBeTruthy();
-  });
-  test("should return true", () => {
-    expect(isDeepEqual(undefined, undefined)).toBeTruthy();
-  });
-  test("should return true", () => {
-    expect(isDeepEqual(null, null)).toBeTruthy();
-  });
-  test("should return true", () => {
-    expect(isDeepEqual({}, {})).toBeTruthy();
-  });
-  test("should return true", () => {
+
+  test("should return true for deeply nested equal objects", () => {
     expect(
       isDeepEqual(
         { name: "test", test: { a: 1 } },
         { name: "test", test: { a: 1 } }
       )
-    ).toBeTruthy();
-    expect(
-      isDeepEqual(
-        { name: "test", test: { a: { b: { c: { d: { e: () => 10 } } } } } },
-        { name: "test", test: { a: 1 } }
-      )
-    ).toBeFalsy();
+    ).toBe(true);
     expect(
       isDeepEqual(
         { name: "test", test: { a: { b: { c: { d: { e: () => 10 } } } } } },
         { name: "test", test: { a: { b: { c: { d: { e: () => 10 } } } } } }
       )
-    ).toBeTruthy();
+    ).toBe(true);
   });
-  test("should return true", () => {
-    expect(isDeepEqual([{ key: "value" }], [{ key: "value" }])).toBeTruthy();
-  });
-  test("should return true", () => {
-    expect(isDeepEqual(["ahmet"], ["ahmet"])).toBeTruthy();
-  });
-  test("should return true", () => {
+
+  test("should return false for deeply nested unequal objects", () => {
     expect(
-      isDeepEqual(new Date("2011-10-10"), new Date("2011-10-10"))
-    ).toBeTruthy();
+      isDeepEqual(
+        { name: "test", test: { a: { b: { c: { d: { e: () => 10 } } } } } },
+        { name: "test", test: { a: 1 } }
+      )
+    ).toBe(false);
   });
-  test("should return false", () => {
-    expect(
-      isDeepEqual(new Date("2011-10-12"), new Date("2011-10-10"))
-    ).toBeFalsy();
-  });
-  test("should return true when got same function", () => {
+
+  test("should return true for same functions", () => {
     expect(
       isDeepEqual(
         function () {
@@ -106,9 +104,10 @@ describe("isDeepEqual tests", () => {
           return Math.random().toString(36).substr(2, 9);
         }
       )
-    ).toBeTruthy();
+    ).toBe(true);
   });
-  test("should return correct value when got big object", () => {
+
+  test("should return correct value for big objects", () => {
     const bigObjOne = {
       name: "Ahmet",
       age: 24,
@@ -205,17 +204,17 @@ describe("isDeepEqual tests", () => {
       nullValue: null,
       undefinedValue: undefined,
     };
-    expect(isDeepEqual(bigObjOne, bigObjTwo)).toBeTruthy();
+    expect(isDeepEqual(bigObjOne, bigObjTwo)).toBe(true);
     bigObjTwo.age = 30;
-    expect(isDeepEqual(bigObjOne, bigObjTwo)).toBeFalsy();
+    expect(isDeepEqual(bigObjOne, bigObjTwo)).toBe(false);
     bigObjTwo.age = 24;
-    expect(isDeepEqual(bigObjOne, bigObjTwo)).toBeTruthy();
+    expect(isDeepEqual(bigObjOne, bigObjTwo)).toBe(true);
     bigObjTwo.createdAt = new Date();
-    expect(isDeepEqual(bigObjOne, bigObjTwo)).toBeFalsy();
+    expect(isDeepEqual(bigObjOne, bigObjTwo)).toBe(false);
     bigObjTwo.createdAt = bigObjOne.createdAt;
-    expect(isDeepEqual(bigObjOne, bigObjTwo)).toBeTruthy();
+    expect(isDeepEqual(bigObjOne, bigObjTwo)).toBe(true);
     // @ts-ignore: Unreachable code error
     bigObjOne.idGenerator = null;
-    expect(isDeepEqual(bigObjOne, bigObjTwo)).toBeFalsy();
+    expect(isDeepEqual(bigObjOne, bigObjTwo)).toBe(false);
   });
 });
