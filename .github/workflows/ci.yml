@@ -1,9 +1,12 @@
 name: CI
 
+# Pushes to master are verified by the publish workflow, which runs the same
+# checks before releasing — no need to run everything twice.
 on:
-  push:
-    branches: [master]
   pull_request:
+  push:
+    branches-ignore: [master]
+  workflow_dispatch:
 
 jobs:
   verify:

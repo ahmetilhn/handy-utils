@@ -387,11 +387,28 @@ isDefined(user.name); // true
 isDefined(user.lastName); // false
 ```
 
-## Test Coverage Result
+## Test Coverage
 
-branches: 94
-functions: 100
-lines: 100
-statements: 97
+211 tests, enforced at 100% for statements, branches, functions and lines.
+
+```bash
+npm run verify   # typecheck, test with coverage, build
+```
 
 _created by Ahmet ilhan_
+
+## Releasing
+
+Releases are automatic. Bump `version` in `package.json` and merge to `master`:
+
+```bash
+npm version patch   # or minor / major
+git push origin master
+```
+
+The publish workflow then type-checks, tests, builds, smoke-tests the packed
+tarball in a clean project, publishes to npm with provenance, and pushes a
+`v<version>` tag.
+
+A commit that does not change the version is not an error — the workflow sees
+the version already on npm and skips the release.

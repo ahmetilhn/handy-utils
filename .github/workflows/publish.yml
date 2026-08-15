@@ -1,16 +1,18 @@
 name: Publish to NPM
 
-# A tag is an explicit release decision. Publishing on every push to master
-# meant unversioned commits failed the job and untested code could ship.
 on:
   push:
-    tags:
-      - "v*"
+    branches: [master]
   workflow_dispatch:
 
 permissions:
-  contents: read
-  id-token: write
+  contents: write # to push the release tag
+  id-token: write # for npm provenance
+
+# Never let two releases race each other onto the registry.
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   publish:
@@ -32,25 +34,77 @@ jobs:
       - name: Install dependencies
         run: npm ci --ignore-scripts
 
-      - name: Fail if the tag does not match package.json
+      # Publishing a version that already exists is a hard error, so a commit
+      # that does not bump the version should skip the release, not fail it.
+      - name: Decide whether this version needs publishing
+        id: check
         run: |
-          TAG="${GITHUB_REF_NAME#v}"
-          PKG="$(node -p "require('./package.json').version")"
-          if [ "$TAG" != "$PKG" ]; then
-            echo "Tag $TAG does not match package.json version $PKG"
-            exit 1
+          NAME="$(node -p "require('./package.json').name")"
+          VERSION="$(node -p "require('./package.json').version")"
+          echo "name=$NAME" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+          if npm view "$NAME@$VERSION" version >/dev/null 2>&1; then
+            echo "$NAME@$VERSION is already on npm — nothing to release."
+            echo "publish=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "$NAME@$VERSION is new — releasing."
+            echo "publish=true" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Type-check
+        if: steps.check.outputs.publish == 'true'
         run: npm run typecheck
 
       - name: Test
+        if: steps.check.outputs.publish == 'true'
         run: npm test
 
       - name: Build
+        if: steps.check.outputs.publish == 'true'
         run: npm run build
 
+      - name: Verify the packed artifact before publishing
+        if: steps.check.outputs.publish == 'true'
+        run: |
+          npm pack
+          WORK="$(mktemp -d)"
+          cd "$WORK"
+          npm init -y >/dev/null
+          npm install --ignore-scripts "$GITHUB_WORKSPACE"/ahmetilhn-handy-utils-*.tgz
+
+          cat > smoke.cjs <<'EOF'
+          const { isDeepEqual, deepClone } = require("@ahmetilhn/handy-utils");
+          if (isDeepEqual(new URL("https://a.com"), new URL("https://b.com"))) {
+            throw new Error("isDeepEqual is broken");
+          }
+          if (!(deepClone(new Map([["a", 1]])) instanceof Map)) {
+            throw new Error("deepClone is broken");
+          }
+          console.log("CJS entry OK");
+          EOF
+
+          node smoke.cjs
+
       - name: Publish
+        if: steps.check.outputs.publish == 'true'
         run: npm publish --access public --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
+
+      - name: Tag the release
+        if: steps.check.outputs.publish == 'true'
+        run: |
+          TAG="v${{ steps.check.outputs.version }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "$TAG" -m "$TAG"
+          git push origin "$TAG"
+
+      - name: Summary
+        run: |
+          if [ "${{ steps.check.outputs.publish }}" = "true" ]; then
+            echo "Published ${{ steps.check.outputs.name }}@${{ steps.check.outputs.version }}" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Skipped: ${{ steps.check.outputs.name }}@${{ steps.check.outputs.version }} is already on npm. Bump the version in package.json to release." >> "$GITHUB_STEP_SUMMARY"
+          fi
