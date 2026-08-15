@@ -8,13 +8,25 @@ module.exports = {
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/lib/$1",
   },
-  globals: {
-    branches: 94,
-    functions: 100,
-    lines: 100,
-    statements: 97,
+  // `globals` was used here previously, which injects variables into tests and
+  // enforces nothing. `coverageThreshold` is the key that actually gates.
+  coverageThreshold: {
+    global: {
+      branches: 100,
+      functions: 100,
+      lines: 100,
+      statements: 100,
+    },
   },
   collectCoverage: true,
+  collectCoverageFrom: [
+    "lib/**/*.ts",
+    // Both compile to zero executable statements, so istanbul reports them as
+    // 0/0 and drags the global ratio down. Their contents are still asserted
+    // in __tests__/index.test.ts.
+    "!lib/index.ts",
+    "!lib/enums/**/*.ts",
+  ],
   coverageDirectory: "coverage",
   setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
 };

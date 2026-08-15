@@ -68,4 +68,17 @@ describe("withRetry tests", () => {
     await withRetry({ fn, retries: 1, delay: 100, exception: NetworkError });
     expect(sleep).not.toHaveBeenCalled();
   });
+
+  test("should return null without invoking fn when retries is not positive", async () => {
+    const fn = jest.fn().mockResolvedValue("ok");
+
+    await expect(
+      withRetry({ fn, retries: 0, delay: 100, exception: NetworkError }),
+    ).resolves.toBeNull();
+    await expect(
+      withRetry({ fn, retries: -1, delay: 100, exception: NetworkError }),
+    ).resolves.toBeNull();
+
+    expect(fn).not.toHaveBeenCalled();
+  });
 });

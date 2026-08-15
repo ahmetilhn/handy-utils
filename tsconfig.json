@@ -1,11 +1,11 @@
 {
   "compilerOptions": {
     /* Basic Options */
-    "target": "es2015" /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017','ES2018' or 'ESNEXT'. */,
+    /* Node 24 is the supported floor, and every evergreen browser has shipped
+       ES2022 since 2022, so there is nothing to downlevel for. */
+    "target": "ES2022",
     "module": "ESNext" /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'. */,
-    "lib": [
-      "esnext"
-    ] /* Specify library files to be included in the compilation. */,
+    "lib": ["ES2023", "DOM"] /* DOM supplies URL/URLSearchParams typings. */,
     // "allowJs": true,                       /* Allow javascript files to be compiled. */
     // "checkJs": true,                       /* Report errors in .js files. */
     //"jsx": "react-jsx" /* Specify JSX code generation: 'preserve', 'react-native', or 'react'. */,
@@ -36,14 +36,16 @@
     // "noImplicitReturns": true,             /* Report error when not all code paths in function return a value. */
     // "noFallthroughCasesInSwitch": true,    /* Report errors for fallthrough cases in switch statement. */
     /* Module Resolution Options */
-    "moduleResolution": "node" /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */,
-    "baseUrl": "." /* Base directory to resolve non-absolute module names. */,
+    /* "node" (node10) is deprecated and removed in TypeScript 7. */
+    "moduleResolution": "bundler",
+    /* Without baseUrl (deprecated in 6.0, removed in 7.0) these resolve
+       relative to this tsconfig. */
     "paths": {
-      "@/*": ["lib/*"]
-    } /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */,
+      "@/*": ["./lib/*"]
+    },
     // "rootDirs": [],                        /* List of root folders whose combined content represents the structure of the project at runtime. */
-    // "typeRoots": [],                       /* List of folders to include type definitions from. */
-    // "types": [],                           /* Type declaration files to be included in compilation. */
+    /* Declared explicitly rather than relying on automatic @types discovery. */
+    "types": ["jest", "node"],
     // "allowSyntheticDefaultImports": true   /* Allow default imports from modules with no default export. This does not affect code emit, just typechecking. */,
     "esModuleInterop": true /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */,
     // "preserveSymlinks": true,              /* Do not resolve the real path of symlinks. */
