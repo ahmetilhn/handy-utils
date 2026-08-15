@@ -19,3 +19,25 @@ describe("isNumber tests", () => {
     expect(isNumber(NaN)).toBeFalsy();
   });
 });
+
+describe("isNumber finiteness", () => {
+  test("should reject Infinity and -Infinity", () => {
+    // NaN was already rejected, so accepting Infinity was inconsistent:
+    // neither is a value you can compute with.
+    expect(isNumber(Infinity)).toBe(false);
+    expect(isNumber(-Infinity)).toBe(false);
+  });
+
+  test("should still accept ordinary finite numbers", () => {
+    expect(isNumber(0)).toBe(true);
+    expect(isNumber(-0)).toBe(true);
+    expect(isNumber(-5.5)).toBe(true);
+    expect(isNumber(Number.MAX_SAFE_INTEGER)).toBe(true);
+  });
+
+  test("should reject numeric strings and boxed numbers", () => {
+    expect(isNumber("5")).toBe(false);
+    // eslint-disable-next-line no-new-wrappers
+    expect(isNumber(new Number(5))).toBe(false);
+  });
+});

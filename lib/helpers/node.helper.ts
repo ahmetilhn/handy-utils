@@ -1,8 +1,8 @@
-import isNull from "@/modules/is-null";
-import NodeEnum from "../enums/NodeEnum";
-
-const getNode = <T extends unknown>(node: T): string => {
-  if (isNull(node)) return NodeEnum.NULL;
+/**
+ * The `[object X]` tag of a value. `Object.prototype.toString` already reports
+ * "[object Null]" for null, so no special case is needed.
+ */
+const getNode = (node: unknown): string => {
   return Object.prototype.toString.call(node);
 };
 

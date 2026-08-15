@@ -18,6 +18,7 @@ import isAndroid from "./modules/is-android";
 import isIos from "./modules/is-ios";
 import withRetry from "./modules/with-retry";
 import watcher from "./modules/watcher";
+import type { WatcherCallback } from "./modules/watcher";
 import normalize from "./modules/normalize";
 export {
   deepClone,
@@ -42,3 +43,4 @@ export {
   watcher,
   normalize,
 };
+export type { WatcherCallback };

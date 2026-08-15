@@ -40,3 +40,25 @@ describe("normalize tests", () => {
     expect(() => normalize(NaN, NaN)).toThrow("Max or value must be number");
   });
 });
+
+describe("normalize input validation", () => {
+  test("should reject non-numeric values that the global isNaN coerces", () => {
+    // `isNaN(null)` is false because null coerces to 0, so null used to pass
+    // validation and be normalised as zero.
+    expect(() => normalize(null as unknown as number, 10)).toThrow(
+      "Max or value must be number"
+    );
+    expect(() => normalize(10, null as unknown as number)).toThrow(
+      "Max or value must be number"
+    );
+    expect(() => normalize("5" as unknown as number, 10)).toThrow(
+      "Max or value must be number"
+    );
+    expect(() => normalize(true as unknown as number, 10)).toThrow(
+      "Max or value must be number"
+    );
+    expect(() => normalize(undefined as unknown as number, 10)).toThrow(
+      "Max or value must be number"
+    );
+  });
+});

@@ -1,9 +1,23 @@
-import isClient from "@/modules/is-client";
+import isClient from "./is-client";
 
+const ANDROID_PATTERN = /Android/i;
+
+/**
+ * Pass a user agent to test it directly, or omit it to read
+ * `navigator.userAgent` in the browser.
+ */
 const isAndroid = (userAgent?: string): boolean => {
-  if (!!userAgent) return !!/Android/i.exec(userAgent);
-  if (!isClient()) throw new Error("Os detecetor only works on client!");
-  return !!/Android/i.exec(navigator.userAgent);
+  // `?? ` rather than a truthiness check: an empty string is still a supplied
+  // user agent, and used to fall through and throw on the server.
+  const agent = userAgent ?? (isClient() ? navigator.userAgent : undefined);
+
+  if (agent === undefined) {
+    throw new Error(
+      "OS detection needs a user agent: pass one, or call this on the client."
+    );
+  }
+
+  return ANDROID_PATTERN.test(agent);
 };
 
 export default isAndroid;

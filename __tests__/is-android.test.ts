@@ -42,3 +42,28 @@ describe("isAndroid tests", () => {
     ).toBeTruthy();
   });
 });
+
+describe("isAndroid explicit user agent", () => {
+  test("should treat an empty user agent as a supplied value, not as absent", () => {
+    // A truthiness check used to let "" fall through to the client lookup,
+    // which then threw on the server.
+    jest.doMock("@/modules/is-client", () => ({
+      __esModule: true,
+      default: () => false,
+    }));
+    const isAndroid = require("@/modules/is-android").default;
+
+    expect(isAndroid("")).toBe(false);
+  });
+
+  test("should work on the server whenever a user agent is given", () => {
+    jest.doMock("@/modules/is-client", () => ({
+      __esModule: true,
+      default: () => false,
+    }));
+    const isAndroid = require("@/modules/is-android").default;
+
+    expect(isAndroid("Mozilla/5.0 (Linux; Android 14)")).toBe(true);
+    expect(isAndroid("Mozilla/5.0 (iPhone)")).toBe(false);
+  });
+});

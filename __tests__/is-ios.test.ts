@@ -42,3 +42,26 @@ describe("isIos tests", () => {
     ).toBeTruthy();
   });
 });
+
+describe("isIos explicit user agent", () => {
+  test("should treat an empty user agent as a supplied value, not as absent", () => {
+    jest.doMock("@/modules/is-client", () => ({
+      __esModule: true,
+      default: () => false,
+    }));
+    const isIos = require("@/modules/is-ios").default;
+
+    expect(isIos("")).toBe(false);
+  });
+
+  test("should work on the server whenever a user agent is given", () => {
+    jest.doMock("@/modules/is-client", () => ({
+      __esModule: true,
+      default: () => false,
+    }));
+    const isIos = require("@/modules/is-ios").default;
+
+    expect(isIos("Mozilla/5.0 (iPad; CPU OS 17_0)")).toBe(true);
+    expect(isIos("Mozilla/5.0 (Linux; Android 14)")).toBe(false);
+  });
+});
