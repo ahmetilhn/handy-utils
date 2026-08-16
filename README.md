@@ -11,12 +11,12 @@ rewriting: type guards that actually narrow, a structural equality function that
 does not lie about `Map`s and `URL`s, a clone that survives circular references,
 and a handful of everyday utilities.
 
-- **21 functions, zero dependencies.**
+- **22 functions, zero dependencies.**
 - **Written in TypeScript.** Every guard is a real type predicate.
 - **Correct on hard inputs.** Circular references, `NaN`, `-0`, `Map`, `Set`,
   `Date`, `RegExp`, typed arrays and class instances are all handled.
 - **Isomorphic.** Nothing touches `window` unless you call a browser helper.
-- **100% test coverage**, enforced in CI across 239 tests.
+- **100% test coverage**, enforced in CI across 267 tests.
 
 ---
 
@@ -30,7 +30,7 @@ and a handful of everyday utilities.
   - [Type guards](#type-guards) — `isArray`, `isBoolean`, `isDate`, `isDefined`, `isFunction`, `isNull`, `isNumber`, `isObject`, `isPlainObject`, `isUndefined`, `hasPlainObjectRecord`
   - [Environment](#environment) — `isClient`, `isServer`
   - [Device](#device) — `isAndroid`, `isIos`
-  - [Utilities](#utilities) — `normalize`, `sleep`, `watcher`, `withRetry`
+  - [Utilities](#utilities) — `debounce`, `normalize`, `sleep`, `watcher`, `withRetry`
 - [How values are compared](#how-values-are-compared)
 - [TypeScript](#typescript)
 - [Breaking changes in 4.0.0](#breaking-changes-in-400)
@@ -503,6 +503,65 @@ const isMobile = isIos(ua) || isAndroid(ua);
 
 ### Utilities
 
+#### `debounce`
+
+Delay a function until the calls stop coming. Every call inside the window
+restarts it, so a burst collapses into a single invocation with the arguments of
+the last call. The receiver and the arguments are passed through untouched.
+
+```ts
+debounce<T extends (...args: any[]) => any>(
+  fn: T,
+  wait: number,
+  options?: {
+    leading?: boolean;   // invoke on the leading edge — default false
+    trailing?: boolean;  // invoke on the trailing edge — default true
+    maxWait?: number;    // never defer longer than this
+  }
+): Debounced<T>;
+
+type Debounced<T> = {
+  (...args: Parameters<T>): ReturnType<T> | undefined;
+  cancel: () => void;                      // drop the pending call
+  flush: () => ReturnType<T> | undefined;  // run the pending call now
+  pending: () => boolean;
+};
+```
+
+```ts
+const search = debounce((term: string) => fetchResults(term), 300);
+
+search("h");
+search("ha");
+search("han"); // only this one runs, 300ms after the last keystroke
+```
+
+```ts
+// Leading edge: react to the first event, ignore the rest of the burst
+const onScrollStart = debounce(track, 200, { leading: true, trailing: false });
+
+// maxWait: a stream of events that never pauses still gets served every 500ms
+const onResize = debounce(relayout, 100, { maxWait: 500 });
+
+onResize.pending(); // true while a call is waiting
+onResize.flush(); // run it now instead of waiting
+onResize.cancel(); // or throw it away — e.g. on unmount
+```
+
+Notes:
+
+- The return value is the result of the **previous** invocation; a deferred call
+  has not produced one yet. For a result you can await, wrap the call in a
+  promise yourself.
+- `cancel` resets the window completely, so the next call counts as the first.
+- `flush` returns the last result untouched when nothing is pending.
+- With `leading: true`, a lone call fires once — there is nothing left to
+  replay on the trailing edge.
+- `maxWait` shorter than `wait` is clamped to `wait`; a non-positive `wait`
+  defers to the next timer tick.
+- Timing reads `Date.now()`, so a clock jump starts a fresh window instead of
+  wedging the timer.
+
 #### `normalize`
 
 Express a value as a percentage of a maximum. Capped at 100 and rounded to two
@@ -734,7 +793,7 @@ npm install
 npm run verify   # typecheck, test with coverage, build
 ```
 
-239 tests, enforced at 100% for statements, branches, functions and lines.
+267 tests, enforced at 100% for statements, branches, functions and lines.
 
 ## Releasing
 

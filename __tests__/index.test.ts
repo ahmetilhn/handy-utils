@@ -2,6 +2,7 @@ import * as handyUtils from "@/index";
 import NodeEnum from "@/enums/NodeEnum";
 
 const EXPECTED_EXPORTS = [
+  "debounce",
   "deepClone",
   "isArray",
   "isObject",

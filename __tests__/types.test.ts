@@ -5,6 +5,7 @@ import isFunction from "@/modules/is-function";
 import isNumber from "@/modules/is-number";
 import sleep from "@/modules/sleep";
 import deepClone from "@/modules/deep-clone";
+import debounce from "@/modules/debounce";
 
 /**
  * These assertions are enforced by `npm run typecheck`; the runtime
@@ -70,5 +71,21 @@ describe("type surface", () => {
 
     expect(copy.list).toEqual([1, 2]);
     expect(copy.when).toBeInstanceOf(Date);
+  });
+
+  test("debounce should keep the wrapped signature", () => {
+    const debounced = debounce((label: string, count: number) => {
+      return `${label}:${count}`;
+    }, 0);
+
+    // The wrapper takes the same parameters, but a deferred call has no result
+    // yet — hence `| undefined`.
+    const result: string | undefined = debounced("a", 1);
+    const waiting: boolean = debounced.pending();
+    const flushed: string | undefined = debounced.flush();
+
+    expect(result).toBeUndefined();
+    expect(waiting).toBe(true);
+    expect(flushed).toBe("a:1");
   });
 });

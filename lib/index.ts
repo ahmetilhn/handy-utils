@@ -1,3 +1,5 @@
+import debounce from "./modules/debounce";
+import type { DebounceOptions, Debounced } from "./modules/debounce";
 import deepClone from "./modules/deep-clone";
 import isArray from "./modules/is-array";
 import isObject from "./modules/is-object";
@@ -21,6 +23,7 @@ import watcher from "./modules/watcher";
 import type { WatcherCallback } from "./modules/watcher";
 import normalize from "./modules/normalize";
 export {
+  debounce,
   deepClone,
   isArray,
   isObject,
@@ -43,4 +46,4 @@ export {
   watcher,
   normalize,
 };
-export type { WatcherCallback };
+export type { DebounceOptions, Debounced, WatcherCallback };
