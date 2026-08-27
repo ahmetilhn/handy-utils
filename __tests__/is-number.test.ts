@@ -22,8 +22,6 @@ describe("isNumber tests", () => {
 
 describe("isNumber finiteness", () => {
   test("should reject Infinity and -Infinity", () => {
-    // NaN was already rejected, so accepting Infinity was inconsistent:
-    // neither is a value you can compute with.
     expect(isNumber(Infinity)).toBe(false);
     expect(isNumber(-Infinity)).toBe(false);
   });

@@ -1,8 +1,6 @@
 /**
- * `typeof` is the only reliable function test: it covers arrow, async,
- * generator and async-generator functions as well as class constructors,
- * all of which report distinct `Object.prototype.toString` tags
- * ("[object AsyncFunction]", "[object GeneratorFunction]", ...).
+ * `typeof` is the only reliable function test: it covers arrow, async, generator and
+ * async-generator functions as well as class constructors, all of…
  */
 const isFunction = (val: unknown): val is Function => {
   return typeof val === "function";

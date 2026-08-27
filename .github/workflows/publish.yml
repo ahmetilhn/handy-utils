@@ -27,15 +27,13 @@ jobs:
           registry-url: "https://registry.npmjs.org/"
           cache: npm
 
-      # --ignore-scripts blocks dependency lifecycle scripts, which are an
-      # arbitrary-code-execution path during install. Scoped to this command on
-      # purpose: setting it globally would also skip our own prepublishOnly
-      # gate, which is what re-verifies the package before it ships.
+      # ignore-scripts blocks dependency lifecycle scripts, which are an
+      # arbitrary-code-execution path during install.
       - name: Install dependencies
         run: npm ci --ignore-scripts
 
-      # Publishing a version that already exists is a hard error, so a commit
-      # that does not bump the version should skip the release, not fail it.
+      # Publishing a version that already exists is a hard error, so a commit that does not
+      # bump the version should skip the release, not fail it.
       - name: Decide whether this version needs publishing
         id: check
         run: |

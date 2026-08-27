@@ -43,8 +43,6 @@ describe("normalize tests", () => {
 
 describe("normalize input validation", () => {
   test("should reject non-numeric values that the global isNaN coerces", () => {
-    // `isNaN(null)` is false because null coerces to 0, so null used to pass
-    // validation and be normalised as zero.
     expect(() => normalize(null as unknown as number, 10)).toThrow(
       "Max or value must be number"
     );

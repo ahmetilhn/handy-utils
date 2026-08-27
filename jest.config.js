@@ -8,8 +8,8 @@ module.exports = {
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/lib/$1",
   },
-  // `globals` was used here previously, which injects variables into tests and
-  // enforces nothing. `coverageThreshold` is the key that actually gates.
+  // `globals` was used here previously, which injects variables into tests and enforces nothing.
+  // `coverageThreshold` is the key that actually gates.
   coverageThreshold: {
     global: {
       branches: 100,
@@ -21,9 +21,8 @@ module.exports = {
   collectCoverage: true,
   collectCoverageFrom: [
     "lib/**/*.ts",
-    // Both compile to zero executable statements, so istanbul reports them as
-    // 0/0 and drags the global ratio down. Their contents are still asserted
-    // in __tests__/index.test.ts.
+    // Both compile to zero executable statements, so istanbul reports them as 0/0 and drags the
+    // global ratio down.
     "!lib/index.ts",
     "!lib/enums/**/*.ts",
   ],

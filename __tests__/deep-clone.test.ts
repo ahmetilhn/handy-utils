@@ -120,16 +120,16 @@ describe("deepClone tests", () => {
     expect(deepCopyObj.isDeveloper).toStrictEqual(objToCopy.isDeveloper);
 
     expect(deepCopyObj.skills).toStrictEqual(objToCopy.skills);
-    expect(deepCopyObj.skills).not.toBe(objToCopy.skills); // Reference check
+    expect(deepCopyObj.skills).not.toBe(objToCopy.skills);
 
     expect(deepCopyObj.languages).toStrictEqual(objToCopy.languages);
-    expect(deepCopyObj.languages).not.toBe(objToCopy.languages); // Reference check
+    expect(deepCopyObj.languages).not.toBe(objToCopy.languages);
 
     expect(deepCopyObj.details).toStrictEqual(objToCopy.details);
-    expect(deepCopyObj.details).not.toBe(objToCopy.details); // Reference check
+    expect(deepCopyObj.details).not.toBe(objToCopy.details);
 
     expect(deepCopyObj.contact).toStrictEqual(objToCopy.contact);
-    expect(deepCopyObj.contact).not.toBe(objToCopy.contact); // Reference check
+    expect(deepCopyObj.contact).not.toBe(objToCopy.contact);
 
     expect(deepCopyObj.details.workExperience).toStrictEqual(
       objToCopy.details.workExperience
@@ -157,17 +157,17 @@ describe("deepClone tests", () => {
     ).toStrictEqual(objToCopy.languages[0].awards[0].otherWinners[2].children);
     expect(
       deepCopyObj.languages[0].awards[0].otherWinners[2].children
-    ).not.toBe(objToCopy.languages[0].awards[0].otherWinners[2].children); // Reference check
+    ).not.toBe(objToCopy.languages[0].awards[0].otherWinners[2].children);
 
     expect(deepCopyObj.createdAt).toStrictEqual(objToCopy.createdAt);
-    expect(deepCopyObj.createdAt).not.toBe(objToCopy.createdAt); // Reference check
+    expect(deepCopyObj.createdAt).not.toBe(objToCopy.createdAt);
 
     expect(deepCopyObj.idGenerator()).not.toStrictEqual(
       objToCopy.idGenerator()
     );
 
     expect(deepCopyObj.references).toStrictEqual(objToCopy.references);
-    expect(deepCopyObj.references).not.toBe(objToCopy.references); // Reference check
+    expect(deepCopyObj.references).not.toBe(objToCopy.references);
 
     expect(deepCopyObj.nullValue).toBeNull();
     expect(deepCopyObj.undefinedValue).toBeUndefined();

@@ -45,7 +45,6 @@ describe("debounce tests", () => {
     jest.advanceTimersByTime(50);
     debounced();
 
-    // The first timer fires here, but the window moved 50ms forward.
     jest.advanceTimersByTime(50);
     expect(fn).not.toHaveBeenCalled();
 
@@ -74,7 +73,6 @@ describe("debounce tests", () => {
     expect(fn).toHaveBeenCalledTimes(1);
     expect(fn).toHaveBeenCalledWith("a");
 
-    // A single call has nothing left to replay on the trailing edge.
     jest.advanceTimersByTime(100);
     expect(fn).toHaveBeenCalledTimes(1);
   });
@@ -119,8 +117,6 @@ describe("debounce tests", () => {
     const fn = jest.fn();
     const debounced = debounce(fn, 100, { maxWait: 250 });
 
-    // A call every 50ms never lets the 100ms window close on its own, so
-    // without maxWait this stream would starve the function.
     for (let i = 0; i < 4; i++) {
       debounced(i);
       jest.advanceTimersByTime(50);
@@ -141,15 +137,12 @@ describe("debounce tests", () => {
     debounced("a");
     jest.advanceTimersByTime(50);
     debounced("b");
-    // A blocked event loop: the clock is past the deadline but the pending
-    // timer has not run, so the next call has to invoke by itself.
     jest.setSystemTime(Date.now() + 300);
     debounced("c");
 
     expect(fn).toHaveBeenCalledTimes(1);
     expect(fn).toHaveBeenCalledWith("c");
 
-    // The timer that was pending must not fire on top of that invocation.
     jest.advanceTimersByTime(500);
     expect(fn).toHaveBeenCalledTimes(1);
   });
@@ -161,7 +154,6 @@ describe("debounce tests", () => {
     debounced();
     jest.advanceTimersByTime(50);
     debounced();
-    // With maxWait honoured literally this would have fired at 10ms.
     expect(fn).not.toHaveBeenCalled();
 
     jest.advanceTimersByTime(50);
@@ -176,7 +168,6 @@ describe("debounce tests", () => {
     jest.advanceTimersByTime(50);
     debounced();
 
-    // The trailing edge alone would land at 150ms; maxWait pulls it to 120ms.
     jest.advanceTimersByTime(69);
     expect(fn).not.toHaveBeenCalled();
 
@@ -189,7 +180,6 @@ describe("debounce tests", () => {
     const debounced = debounce(fn, 100);
 
     debounced("a");
-    // The event loop was blocked past the window; the timer is still pending.
     jest.setSystemTime(Date.now() + 300);
     debounced("b");
     expect(fn).not.toHaveBeenCalled();
@@ -256,7 +246,6 @@ describe("debounce tests", () => {
     debounced.cancel();
     debounced("b");
 
-    // The leading edge fires again because cancel cleared the window.
     expect(fn).toHaveBeenCalledTimes(2);
     expect(fn).toHaveBeenNthCalledWith(2, "b");
   });
@@ -270,7 +259,6 @@ describe("debounce tests", () => {
     expect(fn).toHaveBeenCalledTimes(1);
     expect(debounced.pending()).toBe(false);
 
-    // The flushed timer must not fire a second time.
     jest.advanceTimersByTime(500);
     expect(fn).toHaveBeenCalledTimes(1);
   });
@@ -326,7 +314,6 @@ describe("debounce tests", () => {
     const debounced = debounce(fn, 100, { leading: true });
 
     expect(debounced(1)).toBe(2);
-    // Subsequent calls in the same window report the last known result.
     expect(debounced(9)).toBe(2);
 
     jest.advanceTimersByTime(100);
@@ -360,7 +347,6 @@ describe("debounce tests", () => {
     jest.advanceTimersByTime(100);
     expect(fn).toHaveBeenCalledTimes(1);
 
-    // The call made from inside `fn` is debounced like any other.
     jest.advanceTimersByTime(100);
     expect(fn).toHaveBeenCalledTimes(2);
     expect(fn).toHaveBeenNthCalledWith(2, "inner");

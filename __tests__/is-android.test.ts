@@ -45,8 +45,6 @@ describe("isAndroid tests", () => {
 
 describe("isAndroid explicit user agent", () => {
   test("should treat an empty user agent as a supplied value, not as absent", () => {
-    // A truthiness check used to let "" fall through to the client lookup,
-    // which then threw on the server.
     jest.doMock("@/modules/is-client", () => ({
       __esModule: true,
       default: () => false,

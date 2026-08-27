@@ -1,6 +1,6 @@
 const normalize = (value: number, max: number): number => {
-  // The global `isNaN` coerces first, so `isNaN(null)` is false and a null
-  // slipped through this guard to be treated as 0. Check the type as well.
+  // The global `isNaN` coerces first, so `isNaN(null)` is false and a null slipped through this
+  // guard to be treated as 0.
   if (
     typeof value !== "number" ||
     typeof max !== "number" ||

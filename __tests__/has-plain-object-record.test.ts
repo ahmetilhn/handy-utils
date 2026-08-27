@@ -28,7 +28,6 @@ describe("hasPlainObjectRecord tests", () => {
 
 describe("hasPlainObjectRecord symbol keys", () => {
   test("should count own enumerable symbol keys", () => {
-    // Object.keys skips symbols, so a symbol-only object read as empty.
     expect(hasPlainObjectRecord({ [Symbol("id")]: 1 })).toBe(true);
   });
 

@@ -7,17 +7,11 @@ import sleep from "@/modules/sleep";
 import deepClone from "@/modules/deep-clone";
 import debounce from "@/modules/debounce";
 
-/**
- * These assertions are enforced by `npm run typecheck`; the runtime
- * expectations below only keep jest from reporting an empty suite.
- */
 describe("type surface", () => {
   test("isDefined should narrow away null and undefined", () => {
     const maybe = "value" as string | null | undefined;
 
     if (isDefined(maybe)) {
-      // Previously declared `val is Exclude<any, undefined | null>`, which
-      // collapses to `any` and narrowed nothing.
       const narrowed: string = maybe;
       expect(narrowed).toBe("value");
     } else {
@@ -78,8 +72,6 @@ describe("type surface", () => {
       return `${label}:${count}`;
     }, 0);
 
-    // The wrapper takes the same parameters, but a deferred call has no result
-    // yet — hence `| undefined`.
     const result: string | undefined = debounced("a", 1);
     const waiting: boolean = debounced.pending();
     const flushed: string | undefined = debounced.flush();

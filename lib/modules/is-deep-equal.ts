@@ -46,8 +46,8 @@ const equalMaps = (
 
   if (!unmatched.length) return true;
 
-  // Slow path: object keys need structural matching, and each entry in `b` may
-  // only be consumed once.
+  // Slow path: object keys need structural matching, and each entry in `b` may only be consumed
+  // once.
   const candidates = new Set<unknown>();
   for (const key of b.keys()) {
     if (isObject(key) && !a.has(key)) candidates.add(key);
@@ -113,15 +113,15 @@ const equals = (
   // `Object.is` gives us NaN === NaN and keeps 0 distinct from -0.
   if (Object.is(valOne, valTwo)) return true;
 
-  // Anything not identical and not an object (including functions, which are
-  // only ever equal by reference) cannot be deeply equal.
+  // Anything not identical and not an object (including functions, which are only ever equal by
+  // reference) cannot be deeply equal.
   if (!isObject(valOne) || !isObject(valTwo)) return false;
 
   const tag = getTag(valOne);
   if (tag !== getTag(valTwo)) return false;
 
-  // Cycle guard: if we are already comparing this exact pair further up the
-  // stack, assume equality and let the rest of the structure decide.
+  // Cycle guard: if we are already comparing this exact pair further up the stack, assume equality
+  // and let the rest of the structure decide.
   let partners = seen.get(valOne);
   if (partners) {
     if (partners.has(valTwo)) return true;
@@ -157,8 +157,8 @@ const equals = (
         (valOne as Error).message === (valTwo as Error).message
       );
 
-    // Serialise to their canonical string form — both are common enough in
-    // application code to be worth comparing by value rather than reference.
+    // Serialise to their canonical string form — both are common enough in application code to be
+    // worth comparing by value rather than reference.
     case "[object URL]":
     case "[object URLSearchParams]":
       return String(valOne) === String(valTwo);
@@ -188,8 +188,8 @@ const equals = (
         )
       );
 
-    // WeakMap/WeakSet/Promise expose no inspectable contents — reference
-    // equality is the only sound answer, and `Object.is` already ruled it out.
+    // WeakMap/WeakSet/Promise expose no inspectable contents — reference equality is the only sound
+    // answer, and `Object.is` already ruled it out.
     case "[object WeakMap]":
     case "[object WeakSet]":
     case "[object Promise]":
@@ -214,15 +214,10 @@ const equals = (
     return true;
   }
 
-  // Everything reaching this point is compared through its own enumerable
-  // properties. Exotic built-ins and host objects (DOM nodes, Headers, Blob,
-  // FormData, ...) keep their state in internal slots, so they expose nothing
-  // to compare — claiming equality there is exactly the bug this guard exists
-  // to prevent. Reference equality was already ruled out by `Object.is`.
+  // Everything reaching this point is compared through its own enumerable properties.
   if (tag !== "[object Object]" && tag !== "[object Arguments]") return false;
 
   // Class instances only compare against instances sharing their prototype.
-  // Plain objects skip that check so cross-realm literals still match.
   if (!isPlainObject(valOne) || !isPlainObject(valTwo)) {
     if (Object.getPrototypeOf(valOne) !== Object.getPrototypeOf(valTwo)) {
       return false;
@@ -250,13 +245,7 @@ const equals = (
   return true;
 };
 
-/**
- * Structural equality with `Object.is` semantics for primitives.
- *
- * Handles Date, RegExp, Map, Set, Error, boxed primitives, ArrayBuffer,
- * DataView and typed arrays, is safe against circular references, and treats
- * functions as equal only when they are the same reference.
- */
+/** Structural equality with `Object.is` semantics for primitives. */
 const isDeepEqual = (valOne: unknown, valTwo: unknown): boolean => {
   return equals(valOne, valTwo, new Map<object, Set<object>>());
 };

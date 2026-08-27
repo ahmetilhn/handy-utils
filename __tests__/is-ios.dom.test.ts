@@ -29,8 +29,6 @@ describe("OS detection against a live navigator", () => {
   });
 
   test("should detect iPadOS 13+, which reports itself as Macintosh", () => {
-    // Indistinguishable from a desktop Mac by user agent alone; touch support
-    // is the only signal.
     setNavigator(
       "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 Version/17.0 Safari/605.1.15",
       5
@@ -47,7 +45,6 @@ describe("OS detection against a live navigator", () => {
   });
 
   test("should not apply the touch heuristic to an explicit user agent", () => {
-    // A caller testing a string wants that string judged, not the live device.
     setNavigator("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)", 5);
     expect(
       isIos("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)")

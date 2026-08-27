@@ -1,14 +1,11 @@
 type AnyFunction = (...args: any[]) => any;
 
 type DebounceOptions = {
-  /** Invoke on the leading edge of the window. Defaults to `false`. */
+  /** Invoke on the leading edge of the window. */
   leading?: boolean;
-  /** Invoke on the trailing edge of the window. Defaults to `true`. */
+  /** Invoke on the trailing edge of the window. */
   trailing?: boolean;
-  /**
-   * Upper bound in ms on how long an invocation can be deferred. Without it a
-   * caller that never pauses for `wait` ms starves the function forever.
-   */
+  /** Upper bound in ms on how long an invocation can be deferred. */
   maxWait?: number;
 };
 
@@ -48,8 +45,8 @@ const debounce = <T extends AnyFunction>(
   const invoke = (time: number): ReturnType<T> | undefined => {
     const args = lastArgs as Parameters<T>;
     const thisArg = lastThis;
-    // Cleared before the call so a re-entrant call from `fn` starts a fresh
-    // window instead of replaying these arguments on the trailing edge.
+    // Cleared before the call so a re-entrant call from `fn` starts a fresh window instead of
+    // replaying these arguments on the trailing edge.
     lastArgs = undefined;
     lastInvokeTime = time;
     result = fn.apply(thisArg, args);
@@ -59,8 +56,8 @@ const debounce = <T extends AnyFunction>(
   const shouldInvoke = (time: number): boolean => {
     if (lastCallTime === undefined) return true;
     const sinceCall = time - lastCallTime;
-    // `sinceCall < 0` means the system clock moved backwards; treat it as a
-    // fresh window rather than waiting out a negative interval.
+    // `sinceCall < 0` means the system clock moved backwards; treat it as a fresh window rather
+    // than waiting out a negative interval.
     return (
       sinceCall >= delay ||
       sinceCall < 0 ||
@@ -79,7 +76,6 @@ const debounce = <T extends AnyFunction>(
     const time = Date.now();
     if (!shouldInvoke(time)) {
       // A call landed after this timer was scheduled, so the window moved.
-      // Re-arm for what is left of it instead of invoking early.
       timer = setTimeout(onTimerExpired, remainingWait(time));
       return;
     }
@@ -107,9 +103,8 @@ const debounce = <T extends AnyFunction>(
         return leading ? invoke(time) : result;
       }
       if (hasMaxWait) {
-        // maxWait elapsed inside a busy stream of calls — the pending timer has
-        // not run yet, so it has to be dropped before the next window is armed
-        // or it fires on top of this invocation later.
+        // maxWait elapsed inside a busy stream of calls — the pending timer has not run yet, so it
+        // has to be dropped before the next window is armed or it…
         clearTimeout(timer);
         timer = setTimeout(onTimerExpired, delay);
         return invoke(time);

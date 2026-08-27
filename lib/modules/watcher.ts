@@ -15,9 +15,8 @@ const watcher = <T extends object>(
       const existed = Object.prototype.hasOwnProperty.call(obj, key);
       const previous = obj[key];
 
-      // The existence check matters: without it, assigning `undefined` to a key
-      // that does not exist yet compared equal to its own absent value, so the
-      // property was silently never created.
+      // The existence check matters: without it, assigning `undefined` to a key that does not exist
+      // yet compared equal to its own absent value, so the…
       if (existed && Object.is(previous, value)) return true;
 
       const applied = Reflect.set(obj, prop, value);
@@ -31,8 +30,8 @@ const watcher = <T extends object>(
 
       const previous = obj[key];
       const applied = Reflect.deleteProperty(obj, prop);
-      // A change observer that stays silent on `delete` is not observing the
-      // object, only half of it.
+      // A change observer that stays silent on `delete` is not observing the object, only half of
+      // it.
       if (applied) onChange(key, undefined, previous);
       return applied;
     },

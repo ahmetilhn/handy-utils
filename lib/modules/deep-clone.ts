@@ -31,8 +31,8 @@ const copyOwnKeys = (
 };
 
 const clone = <T>(val: T, seen: WeakMap<object, unknown>): T => {
-  // Primitives are immutable, and functions are shared by reference on purpose:
-  // copying one would break identity comparisons and closure state.
+  // Primitives are immutable, and functions are shared by reference on purpose: copying one would
+  // break identity comparisons and closure state.
   if (!isObject(val) || typeof val === "function") return val;
 
   const source = val as unknown as object;
@@ -107,8 +107,8 @@ const clone = <T>(val: T, seen: WeakMap<object, unknown>): T => {
       return copy as unknown as T;
     }
 
-    // Not structurally inspectable — sharing the reference is the only option
-    // that keeps the clone usable.
+    // Not structurally inspectable — sharing the reference is the only option that keeps the clone
+    // usable.
     case "[object WeakMap]":
     case "[object WeakSet]":
     case "[object Promise]":
@@ -128,8 +128,8 @@ const clone = <T>(val: T, seen: WeakMap<object, unknown>): T => {
   }
 
   if (Array.isArray(source)) {
-    // `new Array(length)` + an `in` check preserves both length and holes,
-    // which `forEach`/`push` would silently compact away.
+    // `new Array(length)` + an `in` check preserves both length and holes, which `forEach`/`push`
+    // would silently compact away.
     const copy = new Array(source.length);
     seen.set(source, copy);
     for (let i = 0; i < source.length; i++) {
@@ -139,8 +139,8 @@ const clone = <T>(val: T, seen: WeakMap<object, unknown>): T => {
     return copy as unknown as T;
   }
 
-  // Plain objects and class instances: keep the prototype so instances stay
-  // instances, and `Object.create(null)` objects stay prototype-less.
+  // Plain objects and class instances: keep the prototype so instances stay instances, and
+  // `Object.create(null)` objects stay prototype-less.
   const copy = Object.create(Object.getPrototypeOf(source)) as Record<
     string | symbol,
     unknown
@@ -168,12 +168,8 @@ const copyOwnKeysExceptIndices = (
 };
 
 /**
- * Recursive structural clone.
- *
- * Safe against circular and shared references, preserves prototypes, and
- * understands Date, RegExp, Map, Set, Error, ArrayBuffer, DataView, typed
- * arrays and sparse arrays. Functions and weak collections are shared by
- * reference because copying them is not meaningful.
+ * Recursive structural clone. Safe against circular and shared references, preserves prototypes,
+ * and understands Date, RegExp, Map, Set, Error…
  */
 const deepClone = <T>(val: T): T => clone(val, new WeakMap<object, unknown>());
 

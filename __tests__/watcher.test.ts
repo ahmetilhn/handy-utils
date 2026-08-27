@@ -60,8 +60,6 @@ describe("watcher tests", () => {
   });
 
   test("should create a new key even when the assigned value is undefined", () => {
-    // The equality short-circuit used to compare `undefined` against the
-    // absent key's own `undefined`, so the property was never created.
     const onChange = jest.fn();
     const state = watcher({} as { label?: string }, onChange);
 
@@ -121,11 +119,7 @@ describe("watcher tests", () => {
   });
 
   test("should not report a change when the write is rejected", () => {
-    // A frozen target makes Reflect.set return false; strict mode then throws.
-    // Either way, onChange must not claim a change that never happened.
     const onChange = jest.fn();
-    // The cast is the point of the test: a frozen target rejects the write at
-    // runtime, and TypeScript would otherwise stop us from expressing that.
     const state = watcher(Object.freeze({ count: 0 }), onChange) as {
       count: number;
     };

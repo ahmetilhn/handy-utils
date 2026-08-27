@@ -28,7 +28,6 @@ describe("isDeepEqual tests", () => {
     });
 
     test("should treat NaN as equal to NaN", () => {
-      // `Object.is` semantics: NaN is indistinguishable from NaN structurally.
       expect(isDeepEqual(NaN, NaN)).toBe(true);
       expect(isDeepEqual(NaN, undefined)).toBe(false);
       expect(isDeepEqual([NaN], [NaN])).toBe(true);
@@ -421,8 +420,6 @@ describe("isDeepEqual tests", () => {
     });
 
     test("should not equate distinct functions with identical source", () => {
-      // Identical source does not imply identical behaviour: the captured
-      // closure state can differ.
       const make = (k: number) => (x: number) => x + k;
       expect(isDeepEqual(make(1), make(99))).toBe(false);
       expect(isDeepEqual(() => 10, () => 10)).toBe(false);
@@ -450,8 +447,6 @@ describe("isDeepEqual tests", () => {
       function* generate(): Generator<number> {
         yield 1;
       }
-      // "[object Generator]" / "[object WeakRef]" expose no own state, so two
-      // distinct instances must not be reported as equal.
       expect(isDeepEqual(generate(), generate())).toBe(false);
       expect(isDeepEqual(new WeakRef({ a: 1 }), new WeakRef({ a: 1 }))).toBe(
         false
@@ -462,7 +457,6 @@ describe("isDeepEqual tests", () => {
     });
 
     test("should not collapse objects that hide state behind accessors", () => {
-      // The historical failure mode: no own enumerable keys was read as "equal".
       expect(
         isDeepEqual(new URL("https://a.com"), new URL("https://b.com"))
       ).toBe(false);
